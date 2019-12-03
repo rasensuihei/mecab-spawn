@@ -1,0 +1,37 @@
+{
+  "name": "mecab-spawn",
+  "version": "1.0.0",
+  "description": "Morpheme analyzer MeCab IPC client.",
+  "main": "mecab-spawn.js",
+  "scripts": {
+    "test": "node test/mecab-spawn-test.js test/test0.txt",
+    "lint": "node_modules/.bin/eslint --ext .js --ignore-path .gitignore .",
+    "fix": "node_modules/.bin/eslint --fix --ext .js --ignore-path .gitignore .",
+    "doc": "node_modules/.bin/jsdoc -d ./doc ./mecab-spawn.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasensuihei/mecab-spawn.git"
+  },
+  "keywords": [
+    "mecab",
+    "async"
+  ],
+  "author": "rasensuihei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rasensuihei/mecab-spawn/issues"
+  },
+  "homepage": "https://github.com/rasensuihei/mecab-spawn#readme",
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "iconv-lite": "^0.5.0",
+    "jsdoc": "^3.6.3"
+  },
+  "dependencies": {}
+}
