@@ -1,6 +1,6 @@
 {
   "name": "mecab-spawn",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Morpheme analyzer MeCab IPC client.",
   "main": "mecab-spawn.js",
   "scripts": {

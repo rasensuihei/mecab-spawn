@@ -7,41 +7,62 @@ npm install mecab-spawn
 ```
 
 ## 使い方
+
+### MeCab プロセスのスポーン
 ``` javascript
-// MeCab プロセスのスポーン
 const mecabSpawn = require('mecab-spawn')
 const mecab = mecabSpawn.spawn()
+```
+``spawn()`` は引数がない場合、パスの通った ``mecab`` コマンドを実行しようとします。引数を指定した場合は ``child_process.spawn()`` にそのまま渡されます。
 
-// 文字列を分析し結果をコンソールに出力する
+``` javascript
+// UniDic 辞書を使用する
+const mecab = mecabSpawn.spawn('mecab', ['-d', '/usr/local/lib/mecab/dic/unidic-mecab'])
+```
+
+### 解析
+以下の例は文字列を解析し結果をコンソールに出力します。
+
+``` javascript
 mecab.analyze('メカブ\nスポーン')
   .then(result => {
     console.log(result)
   }).catch(err => {
     console.error(err)
   })
+// => [ [ 'メカブ', '名詞', '固有名詞', '組織', '*', '*', '*', '*' ],
+//      'EOS',
+//      [ 'スポーン', '名詞', '固有名詞', '組織', '*', '*', '*', '*' ] ]
+```
 
-// MeCab の終了
+ファイルの内容を解析する場合、ファイルと辞書のエンコーディングが同じであれば ``analyze()`` に ``Buffer``オブジェクトを渡すことでデコード処理を省けます。
+
+``` javascript
+fs.readFile('filename.txt', 'utf-8', (err, data) => {
+  if (err) {
+    console.error(err)
+  } else {
+     mecab.analyze(data)
+       .then(console.log)
+       .catch(console.error)
+  }
+})
+```
+
+### MeCab プロセスの終了
+``` javascript
+mecab.analyze('...').then(console.log)
+
 mecab.kill()
   .then(message => {
     console.log(message)
   }).catch(err => {
     console.error(err)
   })
-
-// => [ [ 'メカブ', '名詞', '固有名詞', '組織', '*', '*', '*', '*' ],
-//      'EOS',
-//      [ 'スポーン', '名詞', '固有名詞', '組織', '*', '*', '*', '*' ] ]
-//   MeCab process is killed.
+// => MeCab process is killed.
 ```
 
-``analyze()`` は非同期で実行されますが、``mecab-spawn`` は内部的にタスクのキューを持つため ``kill()`` は分析結果を出力した後に実行されます。
-
-``spawn()`` は引数がない場合、パスの通った ``mecab`` コマンドを実行しようとします。引数を指定した場合は ``child_process.spawn()`` にそのまま渡されます。
-
-``` javascript
-// UniDic 辞書を使用して実行
-const mecab = mecabSpawn.spawn('mecab', ['-d', '/usr/local/lib/mecab/dic/unidic-mecab'])
-```
+``analyze()`` は非同期で実行されますが、``mecab-spawn`` はタスクのキューを持つため ``kill()`` は解析結果が返された後に実行されます。
 
 ## 行パース関数
 解析結果のうち ``eos`` のみ ``mecab.getEOSObject()`` の値がそのまま使われ、残りは全て行パース関数が処理します。
@@ -102,7 +123,7 @@ mecab.setDefaultEncoder(data => iconv.encode(data, 'eucjp'))
 mecab.setDefaultDecoder(data => iconv.decode(data, 'eucjp'))
 ```
 
-あるいは ``analyze()`` にエンコード/デコード関数を指定することで優先的に分析元データに合わせて変更できます。
+あるいは ``analyze()`` にエンコード/デコード関数を指定することで優先的に解析元データに合わせて変更できます。
 ``` javascript
 const eucjpDecoder = data => iconv.decode(data, 'eucjp')
 mecab.analyze(data, null, eucjpDecoder)
